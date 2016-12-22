@@ -7,6 +7,38 @@ use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 class AuthController extends Controller
 {
+	public function getSignOut($request, $response)
+	{
+		$this->auth->logout();
+		return $response->withRedirect($this->router->pathFor('home'));
+	}
+	// signin controller
+	public function getSignIn($request, $response)
+	{
+		return $this->view->render($response, 'auth/signin.twig');
+	}
+
+	public function postSignIn($request, $response)
+	{
+		// use the attempt class
+		$auth = $this->auth->attempt(
+			$request->getParam('email'),
+			$request->getParam('password')
+		);
+
+		if (!$auth) {
+			// flash message
+			$this->flash->addMessage('error', 'Could not sign you in with those details');
+
+			return $response->withRedirect($this->router->pathFor('auth.signin'));
+		}
+		
+		// flash message
+		$this->flash->addMessage('success', 'Successfully signed in');
+		return $response->withRedirect($this->router->pathFor('home'));
+	}
+
+	// signup controller
 	public function getSignUp($request, $response)
 	{
 		return $this->view->render($response, 'auth/signup.twig');
@@ -30,6 +62,12 @@ class AuthController extends Controller
 			'name' => $request->getParam('name'),
 			'password' => password_hash($request->getParam('password'), PASSWORD_DEFAULT),
 		]);
+
+		// flash a message
+		$this->flash->addMessage('info', 'You have been signed up');
+
+		// log the user directly in
+		$this->auth->attempt($user->email, $request->getParam('password'));
 
 		return $response->withRedirect($this->router->pathFor('home'));
 	}

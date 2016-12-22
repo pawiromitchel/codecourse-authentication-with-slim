@@ -9,7 +9,9 @@
 <body>
 	{% include 'templates/partials/navigation.twig' %}
 	<div class="container">
+		{% include 'templates/partials/flash.twig' %}
 		{% block content %}{% endblock %}
+		
 	</div>
 
 	<script  src="http://code.jquery.com/jquery-2.2.4.js"  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="  crossorigin="anonymous"></script>
