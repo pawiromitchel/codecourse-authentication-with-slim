@@ -10,6 +10,8 @@ class AuthController extends Controller
 	public function getSignOut($request, $response)
 	{
 		$this->auth->logout();
+		// flash message
+		$this->flash->addMessage('error', 'You have been signed out');
 		return $response->withRedirect($this->router->pathFor('home'));
 	}
 	// signin controller
